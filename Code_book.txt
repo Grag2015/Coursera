@@ -1,0 +1,13 @@
+## Study design
+I've read data from files X_test.txt, y_test.txt, subject_test.txt and merged them by column to create test set . 
+(see data frame test_set)
+Then, I've read data from files X_train.txt, y_train.txt, subject_train.txt and merged them by column   
+to create training set. (see data frame train_set)
+I've merged obtained sets by rows to create one data set. (see data frame Union_set)
+Next, I've extracted only the measurements on the mean and standard deviation for each measurement. 
+(for example, was extracted variables tBodyGyroJerkMag-std(), tBodyGyroMag-mean(), and so on)
+So in data set 
+
+
+## Code book
+
