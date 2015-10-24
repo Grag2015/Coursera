@@ -21,6 +21,42 @@ Finally, using the data set "Union_set_mean_std", I've obtained new data set (na
 
 ## Code book
 In this section I've described each variable in data set "output"
-"activity_id" -  obtaine code of activity (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING)    
-"subj" - An identifier of the subject who carried out the experiment.                        
+"activity_id" -  obtaine code of activity (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING)  "subj" - An identifier of the subject who carried out the experiment.                        
 "activity_name" - activity name
+Other variables were obtained from appropriate measurements with the average of each variable for each activity and each subject. (e.g. variable "tBodyAcc-mean()-X_aver_by_subj_activ" was obtained from variable "tBodyAcc-mean()-X")
+
+ [1] "tBodyAcc-mean()-X_aver_by_subj_activ"           "tBodyAcc-mean()-Y_aver_by_subj_activ"          
+ [3] "tBodyAcc-mean()-Z_aver_by_subj_activ"           "tBodyAcc-std()-X_aver_by_subj_activ"           
+ [5] "tBodyAcc-std()-Y_aver_by_subj_activ"            "tBodyAcc-std()-Z_aver_by_subj_activ"           
+ [7] "tGravityAcc-mean()-X_aver_by_subj_activ"        "tGravityAcc-mean()-Y_aver_by_subj_activ"       
+ [9] "tGravityAcc-mean()-Z_aver_by_subj_activ"        "tGravityAcc-std()-X_aver_by_subj_activ"        
+[11] "tGravityAcc-std()-Y_aver_by_subj_activ"         "tGravityAcc-std()-Z_aver_by_subj_activ"        
+[13] "tBodyAccJerk-mean()-X_aver_by_subj_activ"       "tBodyAccJerk-mean()-Y_aver_by_subj_activ"      
+[15] "tBodyAccJerk-mean()-Z_aver_by_subj_activ"       "tBodyAccJerk-std()-X_aver_by_subj_activ"       
+[17] "tBodyAccJerk-std()-Y_aver_by_subj_activ"        "tBodyAccJerk-std()-Z_aver_by_subj_activ"       
+[19] "tBodyGyro-mean()-X_aver_by_subj_activ"          "tBodyGyro-mean()-Y_aver_by_subj_activ"         
+[21] "tBodyGyro-mean()-Z_aver_by_subj_activ"          "tBodyGyro-std()-X_aver_by_subj_activ"          
+[23] "tBodyGyro-std()-Y_aver_by_subj_activ"           "tBodyGyro-std()-Z_aver_by_subj_activ"          
+[25] "tBodyGyroJerk-mean()-X_aver_by_subj_activ"      "tBodyGyroJerk-mean()-Y_aver_by_subj_activ"     
+[27] "tBodyGyroJerk-mean()-Z_aver_by_subj_activ"      "tBodyGyroJerk-std()-X_aver_by_subj_activ"      
+[29] "tBodyGyroJerk-std()-Y_aver_by_subj_activ"       "tBodyGyroJerk-std()-Z_aver_by_subj_activ"      
+[31] "tBodyAccMag-mean()_aver_by_subj_activ"          "tBodyAccMag-std()_aver_by_subj_activ"          
+[33] "tGravityAccMag-mean()_aver_by_subj_activ"       "tGravityAccMag-std()_aver_by_subj_activ"       
+[35] "tBodyAccJerkMag-mean()_aver_by_subj_activ"      "tBodyAccJerkMag-std()_aver_by_subj_activ"      
+[37] "tBodyGyroMag-mean()_aver_by_subj_activ"         "tBodyGyroMag-std()_aver_by_subj_activ"         
+[39] "tBodyGyroJerkMag-mean()_aver_by_subj_activ"     "tBodyGyroJerkMag-std()_aver_by_subj_activ"     
+[41] "fBodyAcc-mean()-X_aver_by_subj_activ"           "fBodyAcc-mean()-Y_aver_by_subj_activ"          
+[43] "fBodyAcc-mean()-Z_aver_by_subj_activ"           "fBodyAcc-std()-X_aver_by_subj_activ"           
+[45] "fBodyAcc-std()-Y_aver_by_subj_activ"            "fBodyAcc-std()-Z_aver_by_subj_activ"           
+[47] "fBodyAccJerk-mean()-X_aver_by_subj_activ"       "fBodyAccJerk-mean()-Y_aver_by_subj_activ"      
+[49] "fBodyAccJerk-mean()-Z_aver_by_subj_activ"       "fBodyAccJerk-std()-X_aver_by_subj_activ"       
+[51] "fBodyAccJerk-std()-Y_aver_by_subj_activ"        "fBodyAccJerk-std()-Z_aver_by_subj_activ"       
+[53] "fBodyGyro-mean()-X_aver_by_subj_activ"          "fBodyGyro-mean()-Y_aver_by_subj_activ"         
+[55] "fBodyGyro-mean()-Z_aver_by_subj_activ"          "fBodyGyro-std()-X_aver_by_subj_activ"          
+[57] "fBodyGyro-std()-Y_aver_by_subj_activ"           "fBodyGyro-std()-Z_aver_by_subj_activ"          
+[59] "fBodyAccMag-mean()_aver_by_subj_activ"          "fBodyAccMag-std()_aver_by_subj_activ"          
+[61] "fBodyBodyAccJerkMag-mean()_aver_by_subj_activ"  "fBodyBodyAccJerkMag-std()_aver_by_subj_activ"  
+[63] "fBodyBodyGyroMag-mean()_aver_by_subj_activ"     "fBodyBodyGyroMag-std()_aver_by_subj_activ"     
+[65] "fBodyBodyGyroJerkMag-mean()_aver_by_subj_activ" "fBodyBodyGyroJerkMag-std()_aver_by_subj_activ"
+
+
