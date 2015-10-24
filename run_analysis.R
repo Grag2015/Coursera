@@ -47,3 +47,4 @@ temp2$activity_name <- activity_name[temp2$activity_id,2]
 row.names(temp2) <- seq(along=row.names(temp2))
 names(temp2)[1:66] <- paste0(names(temp2)[1:66],"_aver_by_subj_activ")
 output <- temp2
+write.table(x = output, file = "output.txt", row.name=FALSE)
