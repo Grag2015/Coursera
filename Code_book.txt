@@ -1,13 +1,26 @@
+## about raw data
+The dataset includes the following files:
+- 'features_info.txt': Shows information about the variables used on the feature vector.
+- 'features.txt': List of all features.
+- 'activity_labels.txt': Links the class labels with their activity name.
+- 'train/X_train.txt': Training set.
+- 'train/y_train.txt': Training labels.
+- 'test/X_test.txt': Test set.
+- 'test/y_test.txt': Test labels.
+
 ## Study design
-I've read data from files X_test.txt, y_test.txt, subject_test.txt and merged them by column to create test set . 
+I've read data from files "X_test.txt", "y_test.txt", "subject_test.txt" and merged them by column to create test set . 
 (see data frame test_set)
-Then, I've read data from files X_train.txt, y_train.txt, subject_train.txt and merged them by column   
-to create training set. (see data frame train_set)
-I've merged obtained sets by rows to create one data set. (see data frame Union_set)
+Then, I've read data from files "X_train.txt", "y_train.txt", "subject_train.txt" and merged them by column   
+to create training set. (see data frame "train_set")
+I've merged obtained sets by rows to create one data set. (see data frame "Union_set")
 Next, I've extracted only the measurements on the mean and standard deviation for each measurement. 
-(for example, was extracted variables tBodyGyroJerkMag-std(), tBodyGyroMag-mean(), and so on)
-So in data set 
+(for example, was extracted variables tBodyGyroJerkMag-std(), tBodyGyroMag-mean(), and so on) (see data set "Union_set_mean_std")
+Finally, using the data set "Union_set_mean_std", I've obtained new data set (named "output") with the average of each variable for each activity and each subject. 
 
 
 ## Code book
-
+In this section I've described each variable in data set "output"
+"activity_id" -  obtaine code of activity (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING)    
+"subj" - An identifier of the subject who carried out the experiment.                        
+"activity_name" - activity name
