@@ -1,0 +1,27 @@
+---
+title: "Assessment_2"
+author: "Grag"
+date: "15 ноября 2015 г."
+output: html_document
+---
+
+setwd("d:/Grag/R/R-studio/Coursera/4_Reproducible Research/RepData_PeerAssessment2/")
+
+## Title (that briefly summarizes your data analysis)
+
+## Synopsis 
+Immediately after the title, there should be a synopsis which describes and summarizes your analysis in at most 10 complete sentences.
+
+## Data Processing
+1. Данные скачал по ссылке [Storm Data](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2) в 
+архиве bz2.
+2. Распаковал архив в рабочую директорию 
+3. Read csv-file
+```{r}
+df <- read.csv("./repdata-data-StormData.csv")
+head(df)
+```
+
+
+## Results
+
