@@ -17,11 +17,48 @@ Immediately after the title, there should be a synopsis which describes and summ
 архиве bz2.
 2. Распаковал архив в рабочую директорию 
 3. Read csv-file
-```{r}
+```{r cache=TRUE}
 df <- read.csv("./repdata-data-StormData.csv")
 head(df)
+summary(df$FATALITIES)
+summary(df$INJURIES)
+tbl <- table(df$EVTYPE)
+tblord <- tbl[order(tbl, decreasing = T)]
 ```
 
 
 ## Results
+рассчитаем суммарную, среднюю  и количество event для каждого типа события
+```{r}
+library(dplyr)
+tmp <- group_by(df, EVTYPE)
+tmp2 <- summarise(.data=tmp, FATALITIEStot=sum(FATALITIES), FATALITIESaver=mean(FATALITIES),
+                  EVTYPEn=n(), INJURIEStot=sum(INJURIES), 
+                  INJURIESaver=mean(INJURIES))
+# check
+sapply(tmp2ord, function(e) sum(is.na(e)))
+tmp2ord$TotalFATALITIES <- character(length = nrow(tmp2ord))
+tmp2ord[tmp2ord$FATALITIEStot>=500,]$TotalFATALITIES<-"500+" 
+tmp2ord[tmp2ord$FATALITIEStot>=100 & tmp2ord$FATALITIEStot<500,]$TotalFATALITIES<-"100-500" 
+tmp2ord[tmp2ord$FATALITIEStot>=50 & tmp2ord$FATALITIEStot<100,]$TotalFATALITIES<-"50-100" 
+tmp2ord[tmp2ord$FATALITIEStot<50,]$TotalFATALITIES<-"0-50" 
+tmp2ord$TotalFATALITIES <- factor(x=tmp2ord$TotalFATALITIES,levels = c("0-50", "50-100",
+                                                                       "100-500", "500+"),
+                                ordered = T)
+# содержит записи с FATALITIEStot>=50 - для дальнейшего использования на графике
+tmp3 <- tmp2ord[tmp2ord$TotalFATALITIES!="0-50" & tmp2ord$TotalFATALITIES!="50-100",]
+```
+
+как видим существует связь между частотой события и средним ущербом
+```{r}
+tmp2ord <- tmp2[order(tmp2$FATALITIEStot, decreasing = T),]
+library(ggplot2)
+
+ggplot(data = tmp2ord, aes(x=FATALITIESaver, y=(EVTYPEn)^(1/3), col=TotalFATALITIES, size=(FATALITIEStot)^(1/3))) + geom_point(alpha=0.8)+xlim(0,3)+ylim(0,62)+annotate("text", label = tmp3$EVTYPE, x = tmp3$FATALITIESaver, y = (tmp3$EVTYPEn)^(1/3), size = 3, colour = "gray",  hjust=-0.1)
+
+ggplot(data = tmp2ord[1:150,], aes(x=log(FATALITIESaver+1), y=log(EVTYPEn), size=FATALITIEStot)) + geom_point() + geom_smooth()
+
+ggplot(data = tmp2ord[1:150,], aes(x=log(INJURIESaver+1), y=log(EVTYPEn), size=(INJURIEStot)^(1/4))) + geom_point()+ geom_smooth()
+
+```
 
