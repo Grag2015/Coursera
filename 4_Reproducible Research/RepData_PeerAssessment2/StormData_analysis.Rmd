@@ -61,7 +61,11 @@ tmp3[tmp3$TotalFATALITIES=="500+",]$EVTYPE <- paste0(tmp3[tmp3$TotalFATALITIES==
 library(ggplot2)
 
 ggplot(data = tmp2ord, aes(x=(FATALITIESmean)^(1/4), y=(EVTYPEn)^(1/4), col=TotalFATALITIES, size=(FATALITIEStotal)^(1/4))) + geom_point()+xlim(0,1.5)+ylim(0,24)+annotate("text", label = tmp3$EVTYPE, x = (tmp3$FATALITIESmean)^(1/4), y = (tmp3$EVTYPEn)^(1/4), size = 3, colour = "#2e3a23",  hjust=-0.1)+xlab("Mean fatalities per event, pcs^(1/4)")+ylab("Number of events, pcs^(1/4)")+
+<<<<<<< HEAD
     labs(title="Relation between 'Mean fatalities per event' and 'Number of events'")+scale_size_continuous(breaks=NULL)
+=======
+    labs(title="Relation between 'Mean fatalities per event' and 'Number of events'")+scale_size_continuous(name = "bigger size - bigger", labels = c("","","","",""), breaks=NULL)
+>>>>>>> 106cad40768bb457199346a4b5445524d67d493b
 
 ggplot(data = tmp2ord[1:150,], aes(x=log(FATALITIESmean+1), y=log(EVTYPEn), size=FATALITIEStotal)) + geom_point() + geom_smooth()
 
