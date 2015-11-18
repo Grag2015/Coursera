@@ -8,6 +8,9 @@ output: html_document
 setwd("d:/Grag/R/R-studio/Coursera/4_Reproducible Research/RepData_PeerAssessment2/")
 
 ## There are negative correlation between frequency and damage of events
+Questions
+**1**. Across the United States, which types of events are most harmful with respect to population health?
+**2**. Across the United States, which types of events have the greatest economic consequences?
 
 ## Synopsis 
 Мы проанализировал данные за весь период наблюдения. Для каждого типа события мы
@@ -135,5 +138,21 @@ ggplot(data = tmp2, aes(x=year, y=INJURmean))+geom_line()+geom_smooth()+
 
 Мы видим, что со временем средние потери падают, это видимо связано, с тем, что
 люди научились лучше защищаться от разрушительного воздействия стихии.
+
+Обработка данных  greatest economic consequences
+```{r}
+Rprof("path_to_hold_output")
+df$PROPDMGdoll <- df$PROPDMG
+for (i in 1:length(df$PROPDMG)) {
+    df$PROPDMGdol[i] <- df$PROPDMG[i]*switch (as.character(df$PROPDMGEXP[i]),
+                                K = 10^3, k = 10^3,
+                                M = 10^6, m = 10^6,
+                                B = 10^9, b = 10^9,
+                                1
+    )
+}
+Rprof(NULL)
+summaryRprof("path_to_hold_output")
+```
 
 
