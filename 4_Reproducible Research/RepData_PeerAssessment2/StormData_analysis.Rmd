@@ -12,7 +12,11 @@ setwd("d:/Grag/R/R-studio/Coursera/4_Reproducible Research/RepData_PeerAssessmen
 ## Synopsis 
 Мы проанализировал данные за весь период наблюдения. Для каждого типа события мы
 нашли общую сумму ущерба, количество событий и средний урон события.
-Immediately after the title, there should be a synopsis which describes and summarizes your analysis in at most 10 complete sentences.
+Immediately after the title, there should be a synopsis which describes and summarizes your analysis in at most 10 complete sentences. Лидер Торнадо - столько и столько. На втором месте
+ и т.д. Хочется отметить, что есть события с бОльшим средним уроном, чем Торнадо, но они возникают
+ гораздо реже - например. И видимо мы еще не научились справляться с такими катаклизами
+ именно их надо изучать более детально, учиться их прогнозировать и готовиться к
+ ним заранее.
 
 ## Data Processing
 1. Данные скачал по ссылке [Storm Data](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2) в 
@@ -21,6 +25,8 @@ Immediately after the title, there should be a synopsis which describes and summ
 ```{r cache=TRUE, message=FALSE}
 df <- read.csv(bzfile("./repdata-data-StormData.csv.bz2"))
 ```
+
+See first 3 transposed rows 
 ```{r}
 t(head(df, n = 3))
 ```
@@ -29,36 +35,40 @@ check NAs for `df`
 ```{r}
 sapply(df, function(e) sum(is.na(e)))
 ```
-There isn't NA-values in interesting columns
+There isn't NA-values in interesting columns - EVTYPE, FATALITIES, INJURIES, *DMG
 
-Thus, the data are ready for analysis.
+**Thus**, the data are ready for analysis.
 
 ## Results
-рассчитаем суммарную, среднюю  и количество event for  события
+рассчитаем суммарную (FATALtotal and INJURtotal), среднюю (FATALmean and INJURmean)
+и количество (EVTYPEn) event for  события
 ```{r warning=FALSE, message=FALSE}
 library(dplyr)
 tmp <- group_by(df, EVTYPE)
 tmp2 <- summarise(.data=tmp, FATALtotal=sum(FATALITIES), FATALmean=mean(FATALITIES),
                   EVTYPEn=n(), INJURtotal=sum(INJURIES), INJURmean=mean(INJURIES))
-# order by 
+# order by FATALtotal
 tmp2ord <- tmp2[order(tmp2$FATALtotal, decreasing = T),]
-# check NAs
-sapply(tmp2ord, function(e) sum(is.na(e)))
-```
-
-```{r}
-summary(tmp2ord$FATALtotal)
 ```
 
 
-Здесь мы видим ТОП-10 events c самым большим суммарным количеством смертей
+Здесь мы видим ТОП-10 events c самым большим суммарным количеством смертей  `FATALtotal`
 ```{r results='asis'}
 library(xtable)
 xt <- xtable(head(tmp2ord, n=10))
 print(xt, type="html")
 ```
 
-create new factor `FATALtotalFac` for `FATALtotal`
+Next, мы видим ТОП-10 events c самым большим средним количеством смертей `FATALmean`
+```{r results='asis'}
+library(xtable)
+xt <- xtable(head(tmp2[order(tmp2$FATALmean, decreasing = T),], n=10))
+print(xt, type="html")
+```
+
+
+##  
+Next, create new factor `FATALtotalFac` for `FATALtotal` (It's necessary for plot)
 ```{r FATALtotal}
 tmp2ord$FATALtotalFac <- character(length = nrow(tmp2ord))
 tmp2ord[tmp2ord$FATALtotal>=500,]$FATALtotalFac<-"500+" 
@@ -69,6 +79,7 @@ tmp2ord$FATALtotalFac <- factor(x=tmp2ord$FATALtotalFac,levels = c("0-50", "50-1
                                                                    "100-500", "500+"),
                                 ordered = T)
 ```
+ 
 
 содержит записи с FATALtotal>=50 - для дальнейшего использования на графике
 ```{r} 
@@ -77,8 +88,7 @@ tmp3$EVTYPE <- as.character(tmp3$EVTYPE)
 tmp3[tmp3$FATALtotalFac=="500+",]$EVTYPE <- paste0(tmp3[tmp3$FATALtotalFac=="500+",]$EVTYPE," (", tmp3[tmp3$FATALtotalFac=="500+",]$FATALtotal, ")")
 ```
 
-как видим существует обратная связь между частотой события и средним ущербом - 
-чем чаще появляется событие, тем меньше ущерба оно наносит
+Построим интересный график
 ```{r fig.width=10,  fig.height=8, warning=FALSE, message=FALSE}
 library(ggplot2)
 
@@ -93,41 +103,37 @@ ggplot(data = tmp2ord, aes(x=(FATALmean)^(1/4), y=(EVTYPEn)^(1/4), col=FATALtota
     scale_color_discrete(name="Fatalities levels")
 
 ```
-
-create new factor `INJURtotalFac` for `INJURtotal`
-```{r INJURtotal}
-tmp2ord$INJURtotalFac <- character(length = nrow(tmp2ord))
-tmp2ord[tmp2ord$INJURtotal>=5000,]$INJURtotalFac<-"5000+" 
-tmp2ord[tmp2ord$INJURtotal>=1000 & tmp2ord$INJURtotal<5000,]$INJURtotalFac<-"1000-5000" 
-tmp2ord[tmp2ord$INJURtotal>=100 & tmp2ord$INJURtotal<1000,]$INJURtotalFac<-"100-1000" 
-tmp2ord[tmp2ord$INJURtotal<100,]$INJURtotalFac<-"0-100" 
-tmp2ord$INJURtotalFac <- factor(x=tmp2ord$INJURtotalFac,levels = c("0-100", "100-1000",
-                                                                   "1000-5000", "5000+"),
-                                ordered = T)
-```
-
-содержит записи с INJURtotal>=50 - для дальнейшего использования на графике
-```{r} 
-tmp3 <- tmp2ord[tmp2ord$INJURtotalFac!="0-100" & tmp2ord$INJURtotalFac!="100-1000",]
-tmp3$EVTYPE <- as.character(tmp3$EVTYPE)
-# for values greater than 5000 add label with 
-tmp3[tmp3$INJURtotalFac=="5000+",]$EVTYPE <- paste0(tmp3[tmp3$INJURtotalFac=="5000+",]$EVTYPE,
-                                                    " (", tmp3[tmp3$INJURtotalFac=="5000+",]$INJURtotal, ")")
-```
-
 как видим существует обратная связь между частотой события и средним ущербом - 
-чем чаще появляется событие, тем меньше ущерба оно наносит
-```{r fig.width=10,  fig.height=8, warning=FALSE, message=FALSE}
+чем чаще появляется событие, тем меньше ущерба оно наносит. Все evets form TOP-10
+располагаются ближе к центру графика.
 
-ggplot(data = tmp2ord, aes(x=(INJURmean)^(1/4), y=(EVTYPEn)^(1/4), col=INJURtotalFac, size=(INJURtotal)^(1/4))) + 
-    geom_point()+
-    xlim(0,3)+
-    ylim(0,25)+
-    annotate("text", label = tmp3$EVTYPE, x = (tmp3$INJURmean)^(1/4), y = (tmp3$EVTYPEn)^(1/4), size = 3, colour = "#2e3a23",  hjust=-0.1)+
-    xlab("Mean injuries per event, pcs^(1/4)")+
-    ylab("Number of events, pcs^(1/4)")+
-    labs(title="Relation between 'Mean injuries per event' and 'Number of events'")+
-    scale_size_continuous(breaks=NULL)+
-    scale_color_discrete(name="Injuries levels")
-
+**It's interesting**: positive correlation between FATALtotal and INJURtotal
+```{r}
+fit <- lm(FATALtotal~INJURtotal, data = tmp2ord)
+summary(fit)
 ```
+There is strong correlation between FATALtotal and INJURtotal.
+If INJURtotal increased on 100 men then FATALtotal increased on 6 men.
+
+
+##  
+# Mean injuries in time series
+```{r warning=FALSE, message=FALSE}
+# preparation data for plot
+df$BGN_DATE <- as.Date(df$BGN_DATE, "%m/%d/%Y")
+library(lubridate)
+df$year <- year(df$BGN_DATE)
+tmp <- group_by(df, year)
+tmp2 <- summarise(.data=tmp, INJURtotal=sum(INJURIES), INJURmean=mean(INJURIES))
+#make plot
+ggplot(data = tmp2, aes(x=year, y=INJURmean))+geom_line()+geom_smooth()+
+    ylab("Mean injuries per event")+
+    xlab("Years")+
+    labs(title="Mean injuries increase")
+    
+```
+
+Мы видим, что со временем средние потери падают, это видимо связано, с тем, что
+люди научились лучше защищаться от разрушительного воздействия стихии.
+
+
