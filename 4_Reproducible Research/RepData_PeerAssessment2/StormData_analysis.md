@@ -1,7 +1,7 @@
----
-title: "Tornado and Flood are the most injurious events"
----
-author: *Grigory Miholap*
+
+## Tornado and Flood are the most injurious events
+
+author: *Grigory Miholap*  
 date: *15/11/2015*
 
 **Note**: deer peers, I sorry for my English. 
@@ -128,7 +128,7 @@ print(xt, type="html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 18:59:58 2015 -->
+<!-- Tue Nov 24 19:02:48 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> EVTYPE </th> <th> FATALtotal </th> <th> FATALmean </th> <th> EVTYPEn </th> <th> INJURtotal </th> <th> INJURmean </th>  </tr>
   <tr> <td align="right"> 1 </td> <td> TORNADO </td> <td align="right"> 5633.00 </td> <td align="right"> 0.09 </td> <td align="right"> 60652 </td> <td align="right"> 91346.00 </td> <td align="right"> 1.51 </td> </tr>
@@ -153,7 +153,7 @@ print(xt, type="html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 18:59:58 2015 -->
+<!-- Tue Nov 24 19:02:48 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> EVTYPE </th> <th> FATALtotal </th> <th> FATALmean </th> <th> EVTYPEn </th> <th> INJURtotal </th> <th> INJURmean </th>  </tr>
   <tr> <td align="right"> 1 </td> <td> TORNADOES, TSTM WIND, HAIL </td> <td align="right"> 25.00 </td> <td align="right"> 25.00 </td> <td align="right">   1 </td> <td align="right"> 0.00 </td> <td align="right"> 0.00 </td> </tr>
@@ -291,7 +291,7 @@ print(xt, type="html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 19:00:06 2015 -->
+<!-- Tue Nov 24 19:02:55 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> EVTYPE </th> <th> PROPDMGtotal </th> <th> PROPDMGmean </th> <th> FATALtotal </th>  </tr>
   <tr> <td align="right"> 1 </td> <td> FLOOD </td> <td align="right"> 144657709807.00 </td> <td align="right"> 5711826.18 </td> <td align="right"> 470.00 </td> </tr>
