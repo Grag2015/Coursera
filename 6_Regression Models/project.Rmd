@@ -17,7 +17,7 @@ data(mtcars)
 ```
 
 
-**Note 1:** I've hidden some code chunks to make report shorter. All code available [here](https://github.com/Grag2015/Coursera/blob/master/6_Regression%20Models/project.R)
+**Note 1:** I've hidden some code chunks to make report shorter. All code available [here](https://github.com/Grag2015/Coursera/blob/master/6_Regression%20Models/project.Rmd)
 
 ```{r echo=FALSE, results='hide'}
 # my functions
