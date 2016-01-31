@@ -1,0 +1,134 @@
+---
+title: "Machine learning knows how well you perform barbell lifts"
+author: "Grag"
+date: "31/01/2016"
+---
+
+read data
+```{r}
+df = read.csv("pml-training.csv")
+```
+```{r echo=FALSE}
+user_name <- df$user_name
+```
+
+
+```{r}
+dim(df)
+```
+Our dataset has 160 variables.
+
+In first, I've removed some zero variance predictors
+```{r}
+df <- df[, -nearZeroVar(df)]
+
+```
+
+It's easy to check dataset has very many NA-values
+```{r}
+sum(sapply(df, function(e) sum(is.na(e))))
+```
+
+There are variables wich contain more than 80% NA-values 
+```{r}
+na80 <- sapply(df, function(e) sum(is.na(e)))/19622>0.8
+names(df)[na80]
+```
+
+I've  removed such predictors
+```{r}
+df <- df[,!na80]
+```
+
+And I'll delete meta-information from list of predictors
+```{r}
+names(df[,1:6])
+df <- df[,-c(1:6)]
+```
+
+In the end, I've removed some linear dependencies
+```{r}
+df <- df[, -findCorrelation(cor(df[,-53]), .95)]
+```
+So, now I have 49 variables 
+
+Next, because test-set "pml-testing.csv" doesn't contain outcome, I'll create test set from
+training data 
+```{r}
+set.seed(13)
+inTrain <- createDataPartition(y=df$classe, p=0.75, list = F) 
+training <- df[inTrain,]
+testing <- df[-inTrain,]
+```
+
+## Exploratory analysis
+I decided reduce dimension using principal component analysis (PCA). It wasn't usefull
+for fitting, but I found something intresting.
+```{r}
+preProc<-preProcess(training, method="pca", thresh = 0.99)
+trainingPC <- predict(preProc, training[,-49]) 
+preProc$numComp
+
+```
+So, we made 36 components wich captured 99% "information"
+
+Now, I'll show what kind of "information"" we captured using principal components
+```{r}
+ggplot(data = data.frame(trainingPC,user=user_name[inTrain]), aes(x=PC1, y=PC2, col=user))+
+    geom_point()
+```
+What does it mean? I think, this picture says us, that in first there are strong pattern for every users, and in second 2 first prinipal components (wich you see on pict) contain information about
+this pattern. But unfortunally information about users (who made excercises) is useless for us, 
+because we are going to fit model, wich can work for everybody.
+And I supposed that PCA dosn't help me. To check it I fitted 2 decision trees - with source data nd with PCA-preprocessing data. Results you can see in the table below.
+
+```{r echo=F}
+fit_tree <- train(classe~., data = training, method="rpart")
+pred1 <- predict(fit_tree, newdata=testing)
+acc1 <- confusionMatrix(pred1, testing$classe)$overall[1]
+
+fit_tree2 <- train(classe~., data = data.frame(trainingPC, classe=training$classe), method="rpart")
+testingPC <- predict(preProc, newdata = testing[,-49])
+pred2 <- predict(fit_tree2, newdata=testingPC)
+acc2 <- confusionMatrix(pred2, testing$classe)$overall[1]
+
+```
+
+
+Accuracy without PCA  | Accuracy with PCA
+------------- | -------------
+`r acc1`  | `r acc2`
+
+
+Next step I tryed some more popular LM models and compared results (testing accuracy)
+(Here I didn't use meta-methods such as boosting, bagging and so on)
+
+## Tree
+This model I made above, when I was estimating PCA. Accuraccy was not very high 
+```{r}
+varImp(fit_tree)
+```
+here we see list of the most impotant variables. I would look for some pattern on scatter-plot
+with top-variables
+```{r}
+library(gridExtra)
+g1 <- ggplot(data = training, aes(x=magnet_belt_y , y=total_accel_belt, col=classe, alpha=0.5))+
+    geom_point()
+g2 <- ggplot(data = training, aes(x=magnet_belt_y , y=yaw_belt, col=classe))+
+    geom_point()
+
+grid.arrange(g1, g2, ncol=1)
+```
+We can see some pattern on graphs, but in general classes mixed and it's difficult to obtain high accuracy use simple decision tree.
+
+## Linear discriminant analysis
+Next I tested LDA, I didn't expect high level of accuracy, but I was surprised.
+```{r}
+fitControl <- trainControl(method = "cv", number = 10, repeats = 10)
+fit_lda <- train(classe~., data=main3.training, method="lda", trControl=fitControl)
+
+pred_fit_lda <- predict(fit_lda, newdata = main3.training)
+predDF<- data.frame(pred_fit_lda, predict_tree, classe=main3.training$classe)
+
+```
+
