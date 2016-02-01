@@ -4,7 +4,14 @@ author: "Grag"
 date: "31/01/2016"
 ---
 
-read data
+```{r results='hide', echo=FALSE, warning=FALSE, message=FALSE}
+library(randomForest)
+library("ggplot2")
+library("caret")
+set.seed(1)
+```
+
+## Loading the data
 ```{r}
 df = read.csv("pml-training.csv")
 ```
@@ -12,11 +19,11 @@ df = read.csv("pml-training.csv")
 user_name <- df$user_name
 ```
 
-
+## Preprocessing the data
 ```{r}
 dim(df)
 ```
-Our dataset has 160 variables.
+Our dataset has 160 variables. I'm going to reduce dimension of the data.
 
 In first, I've removed some zero variance predictors
 ```{r}
@@ -32,7 +39,7 @@ sum(sapply(df, function(e) sum(is.na(e))))
 There are variables wich contain more than 80% NA-values 
 ```{r}
 na80 <- sapply(df, function(e) sum(is.na(e)))/19622>0.8
-names(df)[na80]
+names(df)[na80][1:10]
 ```
 
 I've  removed such predictors
@@ -61,7 +68,7 @@ training <- df[inTrain,]
 testing <- df[-inTrain,]
 ```
 
-## Exploratory analysis
+## Principal component analysis
 I decided reduce dimension using principal component analysis (PCA). It wasn't usefull
 for fitting, but I found something intresting.
 ```{r}
@@ -73,16 +80,17 @@ preProc$numComp
 So, we made 36 components wich captured 99% "information"
 
 Now, I'll show what kind of "information"" we captured using principal components
-```{r}
+```{r echo=F, warning=FALSE, message=FALSE}
 ggplot(data = data.frame(trainingPC,user=user_name[inTrain]), aes(x=PC1, y=PC2, col=user))+
     geom_point()
 ```
+
 What does it mean? I think, this picture says us, that in first there are strong pattern for every users, and in second 2 first prinipal components (wich you see on pict) contain information about
 this pattern. But unfortunally information about users (who made excercises) is useless for us, 
 because we are going to fit model, wich can work for everybody.
 And I supposed that PCA dosn't help me. To check it I fitted 2 decision trees - with source data nd with PCA-preprocessing data. Results you can see in the table below.
 
-```{r echo=F}
+```{r echo=F, cache=TRUE, warning=FALSE, message=FALSE}
 fit_tree <- train(classe~., data = training, method="rpart")
 pred1 <- predict(fit_tree, newdata=testing)
 acc1 <- confusionMatrix(pred1, testing$classe)$overall[1]
@@ -105,12 +113,12 @@ Next step I tryed some more popular LM models and compared results (testing accu
 
 ## Tree
 This model I made above, when I was estimating PCA. Accuraccy was not very high 
-```{r}
+```{r warning=FALSE, message=FALSE}
 varImp(fit_tree)
 ```
 here we see list of the most impotant variables. I would look for some pattern on scatter-plot
 with top-variables
-```{r}
+```{r echo=F, warning=FALSE, message=FALSE}
 library(gridExtra)
 g1 <- ggplot(data = training, aes(x=magnet_belt_y , y=total_accel_belt, col=classe, alpha=0.5))+
     geom_point()
@@ -119,16 +127,69 @@ g2 <- ggplot(data = training, aes(x=magnet_belt_y , y=yaw_belt, col=classe))+
 
 grid.arrange(g1, g2, ncol=1)
 ```
-We can see some pattern on graphs, but in general classes mixed and it's difficult to obtain high accuracy use simple decision tree.
+We can see some pattern on graphs, but in general classes mixed and it's difficult to obtain high accuracy use simple decision tree. Maybe we can improve result using boosting? 
 
 ## Linear discriminant analysis
 Next I tested LDA, I didn't expect high level of accuracy, but I was surprised.
-```{r}
+This model didn't take many time and I use cross-validation.
+```{r cache=TRUE}
 fitControl <- trainControl(method = "cv", number = 10, repeats = 10)
-fit_lda <- train(classe~., data=main3.training, method="lda", trControl=fitControl)
+fit_lda <- train(classe~., data=training, method="lda", trControl=fitControl)
 
-pred_fit_lda <- predict(fit_lda, newdata = main3.training)
-predDF<- data.frame(pred_fit_lda, predict_tree, classe=main3.training$classe)
+pred_fit_lda <- predict(fit_lda, newdata = testing)
+acc3 <- confusionMatrix(pred_fit_lda, testing$classe)$overall[1]
+```
+So, we have quite good level of accuracy - `r acc3`
 
+## LDA with bagging 
+Next step, I'll try to improve result using bootstrap aggregating (bagging)
+```{r cache=TRUE, warning=FALSE, message=FALSE}
+# lda with bagging 
+bagLDA2 <- train(training[,-49], training$classe, "bag", B = 10, 
+                 bagControl = bagControl(fit = ldaBag$fit,
+                                         predict = ldaBag$pred,
+                                         aggregate = ldaBag$aggregate))
+pred_fit_ldabag <- predict(bagLDA2, newdata = testing)
+acc4 <- confusionMatrix(pred_fit_ldabag, testing$classe)$overall[1]
+```
+But bagging couldn't increase accuracy - `r acc4` 
+
+## Blending = tree + LDA
+Tree and LDA two different classifiers and we can use blending
+```{r cache=TRUE, warning=FALSE, message=FALSE}
+predDF<- data.frame(pred_fit_lda, pred1, classe=testing$classe)
+fit_stack <- train(classe~., data=predDF, method="rf")
+
+pred_fit_stack <- predict(fit_stack, newdata = testing)
+acc6 <- confusionMatrix(pred_fit_stack, testing$classe)$overall[1]
+```
+SO: Blending didn't very well increase accuracy - `r acc6`
+
+## Random forest
+When we have more than 30 predictors it's reasonably to use random forest.
+```{r cache=TRUE}
+fit_rf3= randomForest(classe~., data=training, mtry=20, ntree=200)
+pred_fit_rf3 <- predict(fit_rf3, newdata = testing)
+
+acc5 <- confusionMatrix(pred_fit_rf3, testing$classe)$overall[1]
+```
+So, we have excelent result: accuracy - `r acc5`
+
+**Resume:**
+
+Model  | Accuracy
+------------- | -------------
+Tree  | `r acc1`
+Tree+PCA  | `r acc2`
+LDA  | `r acc3`
+LDA bagging  | `r acc4`
+Stack LDA+Tree  | `r acc6`
+Random forest  | `r acc5`
+
+```{r}
+library(knitr)
+getwd()
+setwd()
+knit2html("Course project2.Rmd")
 ```
 
