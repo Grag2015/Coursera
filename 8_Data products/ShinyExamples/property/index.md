@@ -1,0 +1,48 @@
+---
+title       :  Value of flats in Minsk
+subtitle    :  
+author      :  Grag
+job         :  data analyst
+logo        : # bloomberg_shield.png
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # zenburn
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Step by step
+
+1. I decided to figure out value of flats in Minsk (Belarus)
+2. I found the most popular web-site, where salers post offers
+3. I coded script, which parses information from the site
+4. I preprocessed information 
+5. then I made machine learning model
+6. finally I deployed my model on shinyapps
+
+---
+
+
+## Source of information
+
+The most popular web-site in Belarus is [realt.by](http://realt.by/sale/flats/search/#tabs)
+For example, available information about flat
+![alt text](figures/flat.png)
+
+
+---
+
+## Programming
+
+Script which parses information was realized using Google Apps Script
+![alt text](figures/code.png)
+
+
+---
+
+## Raw data
+
+raw data looks like this
+
+![alt text](figures/raw.png)
