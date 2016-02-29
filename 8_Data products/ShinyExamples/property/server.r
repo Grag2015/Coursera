@@ -1,5 +1,5 @@
-library(caret)
-library(randomForest)
+# library(caret)
+library(MASS)
 
 mutch <- function(t){
     t1 <- c("Зав", "Лен", "Мос", "Окт", "Пар", "Пер", "Сов", "Фр", "Цен", "кирпичный", "монолитный", "панельный", "новостройка", "стандартный проект", "улучшеный проект", "хороший ремонт", "без отделки", "(0,100]", "(100,500]", "(500,1e+03]", "(1e+03,2e+03]")
@@ -9,12 +9,11 @@ mutch <- function(t){
 
 predictvalue <- function(t1,t2,t3,t4,t5,t6){
         load(file="fit_lda.RData")
-        tt <- data.frame(district=mutch(t1), tipdoma=mutch(t2), 
-                         planirovka=mutch(t3), remont=mutch(t4),
-                         mrasst.f=mutch(t5), area1=numeric(t6), pricem2.f="(1100,1200)")
-        pred <- predict(fit_lda, newdata=tt)
-        p1 <- pred[1]
-        p1
+        tt <- data.frame(district=t1, tipdoma=t2, 
+                         planirovka=t3, remont=t4,
+                         mrasst.f=mutch(t5), area1=numeric(t6), stringsAsFactors = F)#, pricem2.f="(1100,1200)")
+        p1 <- predict(fit_lda, tt)
+        p1$class[1]
         #(as.numeric(sub(x = p1, "\\((\\d+),(\\d+)\\)", replacement = "\\1"))+as.numeric(sub(x=p1, "\\((\\d+),(\\d+)\\)", replacement = "\\2")))/2*as.numeric(t6)
 }
 
