@@ -21,6 +21,15 @@ knit        : slidify::knit2slides
 5. then I made machine learning model
 6. finally I deployed my model on shinyapps
 
+```r
+summary(fit_lda)
+```
+
+```
+## Error in summary(fit_lda): объект 'fit_lda' не найден
+```
+
+
 ---
 
 

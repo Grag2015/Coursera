@@ -20,6 +20,10 @@ knit        : slidify::knit2slides
 4. I preprocessed information 
 5. then I made machine learning model
 6. finally I deployed my model on shinyapps
+```{r}
+summary(fit_lda)
+```
+
 
 ---
 
