@@ -4,7 +4,6 @@
 author: *Grigory Miholap*  
 date: *15/11/2015*
 
-**Note**: deer peers, I sorry for my English. 
 
 ## Questions
 **1**. Across the United States, which types of events are most harmful with respect to population health?  
